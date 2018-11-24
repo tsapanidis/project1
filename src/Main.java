@@ -19,9 +19,9 @@ public class Main implements Comparable<Main>{
             return n.firstName.equals(firstName);
         }
 
-        // public int hashCode() {
-        //     return 31*firstName.hashCode();
-        //}
+         public int hashCode() {
+             return 31*firstName.hashCode();
+        }
 
         public String toString() {
             return firstName;

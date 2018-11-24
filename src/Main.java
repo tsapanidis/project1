@@ -1,22 +1,22 @@
 public class Main implements Comparable<Main>{
 
-        private final String firstName;
+        private final String plates;
 
         public Main(String firstName) {
             if (firstName == null)
                 throw new NullPointerException();
-            this.firstName = firstName;
+            this.plates = firstName;
 
         }
 
-        public String firstName() { return firstName; }
+        public String firstName() { return plates; }
 
 
         public boolean equals(Object o) {
             if (!(o instanceof Main))
                 return false;
             Main n = (Main) o;
-            return n.firstName.equals(firstName);
+            return n.plates.equals(plates);
         }
 
         /* public int hashCode() {
@@ -24,12 +24,12 @@ public class Main implements Comparable<Main>{
         }*/
 
         public String toString() {
-            return firstName;
+            return plates;
         }
 
         public int compareTo(Main n) {
-            int lastCmp = firstName.compareTo(n.firstName);
-            return (lastCmp != 0 ? lastCmp : firstName.compareTo(n.firstName));
+            int lastCmp = plates.compareTo(n.plates);
+            return (lastCmp != 0 ? lastCmp : plates.compareTo(n.plates));
         }
     }
 

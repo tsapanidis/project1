@@ -17,11 +17,17 @@ public class Menu {
 
         switch (i){
             case 1:
-                System.out.println("go to 1");
+                System.out.println("Please type your plate(ABC-1234) :");
+                InputManager first = new InputManager();
+                String plate = first.GetPlate();
+                System.out.println(plate);
                 break;
 
             case 2:
-                System.out.println("go to 2");
+                System.out.println("Please give a number that represents a timeframe in days :");
+                InputManager second = new InputManager();
+                int days = second.GetNum();
+                System.out.println(days);
                 break;
 
             case 3:
@@ -35,9 +41,9 @@ public class Menu {
             default:
                 System.out.println("Type a number between 1-4");
 
-
-
         }
+
+
 
 
 

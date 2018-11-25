@@ -5,6 +5,18 @@ public class Vehicle {
     private int idvehicle;
     private int idowner;
 
+    public boolean equals(Object o) {
+        if (!(o instanceof Vehicle))
+            return false;
+        Vehicle n = (Vehicle) o;
+        return n.Plate.equals(Plate);
+    }
+
+    public int compareTo(Vehicle n) {
+        int lastCmp = Plate.compareTo(n.Plate);
+        return (lastCmp != 0 ? lastCmp : Plate.compareTo(n.Plate));
+    }
+
     public int getIdvehicle() {
         return idvehicle;
     }

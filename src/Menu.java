@@ -36,7 +36,7 @@ public class Menu {
             mo = fm.getOwnerfromFile();
             mi = fm.getInsurancefromFile();
         }else{
-            JDBC db = new JDBC("root","JustPass1");
+            JDBC db = new JDBC("root","root"); //GK: Put your username and password here
             mo = db.RetrieveOwners();
             mi = db.RetrieveExpDates();
         }

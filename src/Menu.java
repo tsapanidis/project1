@@ -61,7 +61,9 @@ public class Menu {
                 System.out.println("Please type your plate(ABC-1234) :");
                 InputManager first = new InputManager();
                 String plate = first.GetPlate();
-                System.out.println(mi.get(plate).getStatus()); //GK: F1 Done???
+                if (mi.containsKey(plate)) { //GK: Oops forgot ALWAYS DO SANITY CHECK
+                    System.out.println(mi.get(plate).getStatus()); //GK: F1 Done???
+                }
                 break;
 
             case 2:

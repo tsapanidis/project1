@@ -21,25 +21,24 @@ public class JDBC {
         }
     }
 
-    private ArrayList<com.JP1.STNFO.Insurance> RetrieveExpDate(String Plate){
+   /* private ArrayList<com.JP1.STNFO.Insurance> RetrieveExpDate(String Plate){
         String sql = "SELECT expdate FROM vehicles WHERE plate='"+Plate+"'";
         return GetInsurance(sql);
-    }
+    }*/
 
-    public ArrayList<Insurance> RetrieveExpDates(){
-        String sql = "SELECT expdate,idVehicles FROM vehicles";
+    public HashMap<String,Insurance> RetrieveExpDates(){
+        String sql = "SELECT expdate,Plate FROM vehicles";
         return GetInsurance(sql);
     }
 
-    private ArrayList<Insurance> GetInsurance(String query){
-        ArrayList<Insurance> ins= new ArrayList<>();
+    private HashMap<String,Insurance> GetInsurance(String query){
+        HashMap<String,Insurance> ins= new HashMap<>();
         try {
             Statement stmt = this.conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()) {
-                ins.add(new Insurance());
-                ins.get(ins.size()-1).setExpDate(rs.getDate("expdate"));
-                ins.get(ins.size()-1).setIdvehicle(rs.getInt("idVehicles"));
+                ins.put(rs.getString("Plate"),new Insurance());
+                ins.get(rs.getString("Plate")).setExpDate(rs.getDate("expdate"));
             }
             rs.close();
             stmt.close();
@@ -78,20 +77,19 @@ public class JDBC {
         return ins;
     }
 
-    public ArrayList<Owner> RetrieveOwners(){
-        String sql = "SELECT name,idOwner FROM owner";
+    public HashMap<String,Owner> RetrieveOwners(){
+        String sql = "SELECT name,Plate FROM owner,vehicles WHERE owner.idOwner = vehicles.idOwner";
         return GetOwner(sql);
     }
 
-    private ArrayList<Owner> GetOwner(String query){
-        ArrayList<Owner> ins= new ArrayList<>();
+    private HashMap<String,Owner> GetOwner(String query){
+        HashMap<String,Owner> ins= new HashMap<>();
         try {
             Statement stmt = this.conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()) {
-                ins.add(new Owner());
-                ins.get(ins.size()-1).setName(rs.getString("name"));
-                ins.get(ins.size()-1).setIdowner(rs.getInt("idOwner"));
+                ins.put(rs.getString("Plate"),new Owner());
+                ins.get(rs.getString("Plate")).setName(rs.getString("name"));
             }
             rs.close();
             stmt.close();

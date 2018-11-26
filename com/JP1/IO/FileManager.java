@@ -8,31 +8,33 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FileManager {
-    private FileWriter fw;
+    private File f;
     private BufferedReader br;
     private List<FileData> fd;
+    private Boolean hf;
 
     public FileManager(){
-        FileReader fr;
-        File f = new File ("output.csv");
         this.fd = new ArrayList<>();
-        try {
-            this.fw = new FileWriter(f);
-            fr = new FileReader(f);
-            this.br= new BufferedReader(fr);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        bootfs("output.csv");
     }
 
     public FileManager(String FileName){
-        FileReader fr;
-        File f = new File (FileName+".csv");
         this.fd = new ArrayList<>();
+        bootfs(FileName+".csv");
+    }
+
+    private void bootfs(String path){
+        FileReader fr;
+        this.hf =true;
+        this.f = new File (path);
         try {
-            this.fw = new FileWriter(f);
-            fr = new FileReader(f);
-            this.br= new BufferedReader(fr);
+            if (this.f.exists() && !this.f.isDirectory()) {
+                fr = new FileReader(this.f);
+                this.br = new BufferedReader(fr);
+            }else{
+                this.hf = false;
+            }
+
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -40,23 +42,24 @@ public class FileManager {
 
     public void WritetoFile(String out){
         try {
-            this.fw.write(out);
-            this.fw.flush();
-            this.fw.close();
+            FileWriter fw = new FileWriter(this.f);
+            fw.write(out);
+            fw.flush();
+            fw.close();
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    public void ReadfromFIle(){
+    private void ReadfromFIle(){
         DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
         try {
             int i = 0;
             for (String Line; (Line = this.br.readLine()) != null; ) {
                 String[] vals = Line.split(",");
                 this.fd.add(new FileData());
-                this.fd.get(i).setIdvehicle(Integer.parseInt(vals[0]));
-                this.fd.get(i).setIdowner(Integer.parseInt(vals[1]));
+               // this.fd.get(i).setIdvehicle(Integer.parseInt(vals[0]));
+               // this.fd.get(i).setIdowner(Integer.parseInt(vals[1]));
                 this.fd.get(i).setPlate(vals[2]);
                 this.fd.get(i).setName(vals[3]);
                 this.fd.get(i).setExpdate(format.parse(vals[4]));
@@ -71,12 +74,14 @@ public class FileManager {
 
     }
 
-    public ArrayList<Owner> getOwnerfromFile(){
-        ArrayList<Owner> ao= new ArrayList<>();
+    public HashMap<String,Owner> getOwnerfromFile(){
+        if (fd.size() == 0){
+            ReadfromFIle();
+        }
+        HashMap<String,Owner> ao= new HashMap<>();
         for (FileData f : this.fd){
-            ao.add(new Owner());
-            ao.get(ao.size()-1).setIdowner(f.getIdowner());
-            ao.get(ao.size()-1).setName(f.getName());
+            ao.put(f.getPlate(),new Owner());
+            ao.get(f.getPlate()).setName(f.getName());
         }
         return ao;
     }
@@ -92,17 +97,21 @@ public class FileManager {
         return ao;
     }
 
-    public ArrayList<Insurance> getInsurancefromFile(){
-        ArrayList<Insurance> ao= new ArrayList<>();
+    public HashMap<String,Insurance> getInsurancefromFile(){
+        if (fd.size() == 0){
+            ReadfromFIle();
+        }
+        HashMap<String,Insurance> ao= new HashMap<>();
         for (FileData f : this.fd){
-            ao.add(new Insurance());
-            ao.get(ao.size()-1).setIdvehicle(f.getIdvehicle());
-            ao.get(ao.size()-1).setExpDate(f.getExpdate());
+            ao.put(f.getPlate(),new Insurance());
+            ao.get(f.getPlate()).setExpDate(f.getExpdate());
         }
         return ao;
     }
 
-
+    public Boolean HasFile() {
+        return hf;
+    }
 
     private class FileData{
         private int idvehicle;

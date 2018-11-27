@@ -1,25 +1,23 @@
 import java.util.Scanner;
 import com.JP1.STNFO.*;
 import com.JP1.IO.*;
-import com.JP1.JDBC.*;
-import java.util.*;
+import com.JP1.JDBC.JDBC;
+import java.util.Map;
 
 public class Menu {
 
     private static Scanner scanner = new Scanner(System.in);
 
-    private static Map<String,Owner> mo;
-    private static Map<String,Insurance> mi;
-    private static FileManager fm;
+    private static Map<String,Owner> owners;
+    private static Map<String,Insurance> insurances;
+    private static FileManager filemanager;
     //GK: Totally NOT a rip-off from Classic Doom
     private static int checkArg(String arg, String [] args){
         if(args.length > 0){
-            int i=0;
-            for (String s:args){
-                if (s.equals(arg)){
+            for (int i=0;i<args.length;i++){
+                if (args[i].equals(arg)){
                     return i;
                 }
-                i++;
             }
         }
         return -1;
@@ -28,24 +26,28 @@ public class Menu {
     private static void Boot(String [] args){
         int file = checkArg("-file",args);
         if (file >= 0){
-            fm=new FileManager(args[file+1]);
+            filemanager=new FileManager(args[file+1]);
         }else {
-            fm = new FileManager();
+            filemanager = new FileManager();
         }
-        if (fm.HasFile()){
-            mo = fm.getOwnerfromFile();
-            mi = fm.getInsurancefromFile();
+        if (filemanager.HasFile()){
+            owners = filemanager.getOwnerfromFile();
+            insurances = filemanager.getInsurancefromFile();
         }else{
-            JDBC db = new JDBC("root","root"); //GK: Put your username and password here
-            mo = db.RetrieveOwners();
-            mi = db.RetrieveExpDates();
+            JDBC database = new JDBC("root","root"); //GK: Put your username and password here
+            owners = database.RetrieveOwners();
+            insurances = database.RetrieveExpDates();
+            database.close();
         }
+
 
     }
 
     public static void main(String[] args) {
 
         Boot(args);
+        //GK: For Testing purposes ONLY
+       // System.out.println(owners+"\n"+insurances);
 
         System.out.println("--- Type a number to choose functionality :");
         System.out.println("1. Vehicle Insurance Status");
@@ -61,8 +63,8 @@ public class Menu {
                 System.out.println("Please type your plate(ABC-1234) :");
                 InputManager first = new InputManager();
                 String plate = first.GetPlate();
-                if (mi.containsKey(plate)) { //GK: Oops forgot ALWAYS DO SANITY CHECK
-                    System.out.println(mi.get(plate).getStatus()); //GK: F1 Done???
+                if (insurances.containsKey(plate)) { //GK: Oops forgot ALWAYS DO SANITY CHECK
+                    System.out.println(insurances.get(plate).getStatus()); //GK: F1 Done???
                 }
                 break;
 

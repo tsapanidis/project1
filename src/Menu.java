@@ -1,8 +1,8 @@
 import java.util.Scanner;
 import com.JP1.STNFO.*;
 import com.JP1.IO.*;
-import com.JP1.JDBC.*;
-import java.util.*;
+import com.JP1.JDBC.JDBC;
+import java.util.Map;
 
 public class Menu {
 
@@ -16,12 +16,10 @@ public class Menu {
     //GK: Totally NOT a rip-off from Classic Doom
     private static int checkArg(String arg, String [] args){
         if(args.length > 0){
-            int i=0;
-            for (String s:args){
-                if (s.equals(arg)){
+            for (int i=0;i<args.length;i++){
+                if (args[i].equals(arg)){
                     return i;
                 }
-                i++;
             }
         }
         return -1;
@@ -48,8 +46,8 @@ public class Menu {
     public static void main(String[] args) {
 
         Boot(args);
-
-        //System.out.println(mo+"\n"+mi);
+        //GK: For Testing purposes ONLY
+       // System.out.println(owners+"\n"+insurances);
 
         System.out.println("--- Type a number to choose functionality :");
         System.out.println("1. Vehicle Insurance Status");

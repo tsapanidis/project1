@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Insurance {
-    private Date expDate;
-    private Date cDate;
+    private Date expirationdate;
+    private Date currentdate;
     private Boolean status;
     private long Days;
     private int idvehicle;
@@ -19,11 +19,11 @@ public class Insurance {
     }
 
     public Insurance() {
-        this.cDate = new Date();
+        this.currentdate = new Date();
     }
 
-    public Date getExpDate() {
-        return expDate;
+    public Date getExpirationDate() {
+        return expirationdate;
     }
 
     public Boolean getStatus() {
@@ -35,13 +35,22 @@ public class Insurance {
     }
 
     public void setExpDate(Date expDate) {
-        this.expDate = expDate;
-        this.Days = this.expDate.getTime()-this.cDate.getTime();
+        this.expirationdate = expDate;
+        this.Days = this.expirationdate.getTime()-this.currentdate.getTime();
         if (this.Days > 0){
             this.status = true;
         }else{
             this.status =false;
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "expirationdate=" + expirationdate +
+                ", status=" + status +
+                ", Days=" + Math.abs(getDays()) +
+                "}\n";
     }
 }

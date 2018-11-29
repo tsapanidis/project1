@@ -1,11 +1,7 @@
 package com.JP1.IO;
 import com.JP1.STNFO.*;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileWriter;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,31 +16,25 @@ public class FileManager {
     private List<FileData> filedata;
     private Boolean hasfile;
 
-    public FileManager(){
+    public FileManager()throws FileNotFoundException{
         this.filedata = new ArrayList<>();
-        bootfs("output.csv");
+        bootFs("output.csv");
     }
 
-    public FileManager(String FileName){
+    public FileManager(String FileName)throws FileNotFoundException{
         this.filedata = new ArrayList<>();
-        bootfs(FileName+".csv");
+        bootFs(FileName+".csv");
     }
 
-    private void bootfs(String path){
-        FileReader filereader;
+    private void bootFs(String path) throws FileNotFoundException {
         this.hasfile =true;
         this.file = new File (path);
-        try {
             if (this.file.exists() && !this.file.isDirectory()) {
-                filereader = new FileReader(this.file);
-                this.buffreader = new BufferedReader(filereader);
+                this.buffreader = new BufferedReader(new FileReader(this.file));
             }else{
                 this.hasfile = false;
             }
 
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     public void WritetoFile(String out){
@@ -54,34 +44,32 @@ public class FileManager {
             filewriter.flush();
             filewriter.close();
         }catch(IOException e){
-            e.printStackTrace();
+            System.err.println("Error:File-"+e.getMessage());
         }
     }
 
-    private void ReadfromFIle(){
+    private void ReadfromFIle()throws IOException{
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            int i = 0;
             for (String Line; (Line = this.buffreader.readLine()) != null; ) {
                 String[] values = Line.split(",");
                 this.filedata.add(new FileData());
-               // this.fd.get(i).setIdvehicle(Integer.parseInt(vals[0]));
-               // this.fd.get(i).setIdowner(Integer.parseInt(vals[1]));
-                this.filedata.get(i).setPlate(values[0]);
-                this.filedata.get(i).setName(values[1]);
-                this.filedata.get(i).setExpdate(format.parse(values[2]));
-                i++;
+                this.filedata.get(this.filedata.size()-1).setPlate(values[0]);
+                this.filedata.get(this.filedata.size()-1).setName(values[1]);
+                this.filedata.get(this.filedata.size()-1).setLname(values[2]);
+                this.filedata.get(this.filedata.size()-1).setAddress(values[3]);
+                this.filedata.get(this.filedata.size()-1).setExpdate(format.parse(values[4]));
+                this.filedata.get(this.filedata.size()-1).setType(Integer.parseInt(values[5]));
+                this.filedata.get(this.filedata.size()-1).setBrand(values[6]);
+                this.filedata.get(this.filedata.size()-1).setModel(values[7]);
             }
         }catch (ParseException pe){
-                pe.printStackTrace();
-
-        }catch (IOException e){
-            e.printStackTrace();
+            System.err.println("Error:File-"+pe.getMessage());
         }
 
     }
 
-    public HashMap<String,Owner> getOwnerfromFile(){
+    public HashMap<String,Owner> getOwnerfromFile() throws IOException{
         if (filedata.size() == 0){
             ReadfromFIle();
         }
@@ -89,22 +77,13 @@ public class FileManager {
         for (FileData data : this.filedata){
             owners.put(data.getPlate(),new Owner());
             owners.get(data.getPlate()).setName(data.getName());
+            owners.get(data.getPlate()).setLname(data.getLname());
+            owners.get(data.getPlate()).setAddress(data.getAddress());
         }
         return owners;
     }
 
-    public ArrayList<Vehicle> getVehiclefromFile(){
-        ArrayList<Vehicle> vehicles= new ArrayList<>();
-        for (FileData data : this.filedata){
-            vehicles.add(new Vehicle());
-            vehicles.get(vehicles.size()-1).setIdowner(data.getIdowner());
-            vehicles.get(vehicles.size()-1).setIdvehicle(data.getIdvehicle());
-            vehicles.get(vehicles.size()-1).setPlate(data.getPlate());
-        }
-        return vehicles;
-    }
-
-    public HashMap<String,Insurance> getInsurancefromFile(){
+    public HashMap<String,Insurance> getInsurancefromFile() throws IOException{
         if (filedata.size() == 0){
             ReadfromFIle();
         }
@@ -116,32 +95,37 @@ public class FileManager {
         return insurances;
     }
 
+    public HashMap<String,Vehicle> getVehiclefromFile() throws IOException{
+        if (filedata.size() == 0){
+            ReadfromFIle();
+        }
+        HashMap<String,Vehicle> vehicles= new HashMap<>();
+        for (FileData data : this.filedata){
+            vehicles.put(data.getPlate(),new Vehicle());
+            vehicles.get(data.getPlate()).setType(data.getType());
+            vehicles.get(data.getPlate()).setBrand(data.getBrand());
+            vehicles.get(data.getPlate()).setModel(data.getModel());
+        }
+        return vehicles;
+    }
+
+    public void close() throws IOException{
+            this.buffreader.close();
+    }
+
     public Boolean HasFile() {
         return hasfile;
     }
 
     private class FileData{
-        private int idvehicle;
-        private int idowner;
         private String plate;
         private String name;
         private Date expdate;
-
-        private int getIdvehicle() {
-            return idvehicle;
-        }
-
-        private void setIdvehicle(int idvehicle) {
-            this.idvehicle = idvehicle;
-        }
-
-        private int getIdowner() {
-            return idowner;
-        }
-
-        private void setIdowner(int idowner) {
-            this.idowner = idowner;
-        }
+        private int type;
+        private String Brand;
+        private String Model;
+        private String Lname;
+        private String Address;
 
         private String getPlate() {
             return plate;
@@ -166,6 +150,26 @@ public class FileManager {
         private void setExpdate(Date expdate) {
             this.expdate = expdate;
         }
+
+        private int getType() { return type; }
+
+        private void setType(int type) { this.type = type; }
+
+        private String getBrand() { return Brand; }
+
+        private void setBrand(String brand) { Brand = brand; }
+
+        private String getModel() { return Model; }
+
+        private void setModel(String model) { Model = model; }
+
+        private String getLname() { return Lname; }
+
+        private void setLname(String lname) { Lname = lname; }
+
+        private String getAddress() { return Address; }
+
+        private void setAddress(String address) { Address = address; }
     }
 
 }

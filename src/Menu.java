@@ -1,3 +1,6 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Scanner;
 import com.JP1.STNFO.*;
 import com.JP1.IO.*;
@@ -10,6 +13,7 @@ public class Menu {
 
     private static Map<String,Owner> owners;
     private static Map<String,Insurance> insurances;
+    private static Map<String,Vehicle> vehicles;
     private static FileManager filemanager;
     //GK: Totally NOT a rip-off from Classic Doom
     private static int checkArg(String arg, String [] args){
@@ -25,19 +29,36 @@ public class Menu {
 //GK: Call this in order to retrieve the Data ONCE
     private static void Boot(String [] args){
         int file = checkArg("-file",args);
-        if (file >= 0){
-            filemanager=new FileManager(args[file+1]);
-        }else {
-            filemanager = new FileManager();
+        try {
+            if (file >= 0) {
+                filemanager = new FileManager(args[file + 1]);
+            } else {
+                filemanager = new FileManager();
+            }
+        }catch(FileNotFoundException e){
+            System.err.println("Error:File-"+e.getMessage());
         }
         if (filemanager.HasFile()){
-            owners = filemanager.getOwnerfromFile();
-            insurances = filemanager.getInsurancefromFile();
+            try {
+                owners = filemanager.getOwnerfromFile();
+                insurances = filemanager.getInsurancefromFile();
+                vehicles = filemanager.getVehiclefromFile();
+                filemanager.close();
+            }catch(IOException e){
+                System.err.println("Error:File-"+e.getMessage());
+            }
         }else{
-            JDBC database = new JDBC("root","root"); //GK: Put your username and password here
-            owners = database.RetrieveOwners();
-            insurances = database.RetrieveExpDates();
-            database.close();
+            try {
+                JDBC database = new JDBC("root", "root"); //GK: Put your username and password here
+                owners = database.RetrieveOwners();
+                insurances = database.RetrieveExpDates();
+                vehicles = database.RetrieveVehicles();
+                database.close();
+            }catch (SQLException sqe){
+                System.err.println("Error:SQL-"+sqe.getMessage());
+            }catch (ClassNotFoundException e){
+                System.err.println("Error:SQL-"+e.getMessage());
+            }
         }
 
 

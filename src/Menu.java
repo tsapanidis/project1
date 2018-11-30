@@ -3,6 +3,7 @@ import com.JP1.STNFO.*;
 import com.JP1.IO.*;
 import com.JP1.JDBC.JDBC;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Menu {
 
@@ -41,6 +42,18 @@ public class Menu {
             mi = db.RetrieveExpDates();
         }
 
+    }
+
+    public static <K, V> Map<K, V> convertToTreeMap(Map<K, V> hashMap)
+    {
+        // Create a new TreeMap
+        Map<K, V> treeMap = new TreeMap<>();
+
+        // Pass the hashMap to putAll() method
+        treeMap.putAll(hashMap);
+
+        // Return the TreeMap
+        return treeMap;
     }
 
     public static void main(String[] args) {
@@ -100,7 +113,15 @@ public class Menu {
                     break;
 
                 case 3:
-                    System.out.println("go to 3");
+
+                    Map<String, Insurance> treeMap = convertToTreeMap(mi);
+                    System.out.println("Uninsured Vehicles\n");
+                    for (String plates : treeMap.keySet()){
+                        if(!treeMap.get(plates).getStatus()){
+                            System.out.println(plates+" "+treeMap.get(plates).getExpirationDate());
+                        }
+                    }
+
                     break;
 
                 case 4:
@@ -109,6 +130,7 @@ public class Menu {
 
                 default:
                     System.out.println("Type a number between 1-4");
+
                     break;
             }
 

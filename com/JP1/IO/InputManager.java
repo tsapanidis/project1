@@ -35,6 +35,24 @@ public class InputManager {
         return this.i.nextInt();
     }
 
+    public int GetOption(){
+        int option = GetNum();
+        while (option < 1 || option > 4){
+            System.out.println("Invalid Choice");
+            option = GetNum();
+        }
+        return option;
+    }
+
+    public int GetChoice(){
+        int choice = GetNum();
+        while (choice < 1 || choice > 2){
+            System.out.println("Invalid Choice");
+            choice = GetNum();
+        }
+        return choice;
+    }
+
     public String GetRaw(){
         return this.i.next();
     }

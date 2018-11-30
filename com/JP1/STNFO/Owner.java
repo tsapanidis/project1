@@ -44,4 +44,22 @@ public class Owner {
                 "Name='" + Name + '\'' +
                 "}\n";
     }
+
+    //GK: For Better convinience in F4
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Owner owner = (Owner) o;
+
+        if (Name != null ? !Name.equals(owner.Name) : owner.Name != null) return false;
+        if (Lname != null ? !Lname.equals(owner.Lname) : owner.Lname != null) return false;
+        return Address != null ? Address.equals(owner.Address) : owner.Address == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }

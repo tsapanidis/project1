@@ -37,15 +37,12 @@ public class FileManager {
 
     }
 
-    public void WritetoFile(String out){
-        try {
+    public void WritetoFile(String out) throws IOException{
             FileWriter filewriter = new FileWriter(this.file);
             filewriter.write(out);
             filewriter.flush();
             filewriter.close();
-        }catch(IOException e){
-            System.err.println("Error:File-"+e.getMessage());
-        }
+
     }
 
     private void ReadfromFIle()throws IOException{

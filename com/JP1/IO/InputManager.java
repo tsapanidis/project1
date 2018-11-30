@@ -24,7 +24,10 @@ public class InputManager {
             System.out.println("Invalid Fine");
             this.i.next();
         }
-        return this.i.nextDouble();
+        //GK: Workaround Hack???
+        double value = this.i.nextDouble();
+        this.i.nextLine();
+        return value;
     }
 
     public int GetNum(){
@@ -54,6 +57,6 @@ public class InputManager {
     }
 
     public String GetRaw(){
-        return this.i.next();
-    }
+        return this.i.nextLine();
+    } //GK: Changed to nextLine in order to get addresses
 }

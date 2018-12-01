@@ -10,6 +10,7 @@ public class Insurance {
     private long Days;
     private int idvehicle;
 
+
     public int getIdvehicle() {
         return idvehicle;
     }

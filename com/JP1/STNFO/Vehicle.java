@@ -4,6 +4,9 @@ public class Vehicle {
     private String Plate;
     private int idvehicle;
     private int idowner;
+    private int type;
+    private String Brand;
+    private String Model;
 
     public boolean equals(Object o) {
         if (!(o instanceof Vehicle))
@@ -39,5 +42,29 @@ public class Vehicle {
 
     public void setPlate(String plate) {
         Plate = plate;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getBrand() {
+        return Brand;
+    }
+
+    public void setBrand(String brand) {
+        Brand = brand;
+    }
+
+    public String getModel() {
+        return Model;
+    }
+
+    public void setModel(String model) {
+        Model = model;
     }
 }
